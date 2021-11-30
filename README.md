@@ -15,25 +15,25 @@ ctx := context.Background()
 taskSet := taskset.NewTaskSet()
 
 taskA := taskSet.New(func(ctx context.Context, depend taskset.Depend) (interface{}, error) {
-time.Sleep(2 * time.Second)
-return 1, nil
+	time.Sleep(2 * time.Second)
+	return 1, nil
 })
 
 taskB := taskSet.New(func(ctx context.Context, depend taskset.Depend) (interface{}, error) {
-time.Sleep(2 * time.Second)
-return 2, nil
+	time.Sleep(2 * time.Second)
+	return 2, nil
 })
 
 taskC := taskSet.New(func(ctx context.Context, depend taskset.Depend) (interface{}, error) {
-if t := depend.ErrGroup(ctx, taskA, taskB); t != nil {
-return nil, depend(ctx, t).Err
-}
+	if t := depend.ErrGroup(ctx, taskA, taskB); t != nil {
+		return nil, depend(ctx, t).Err
+	}
 
-a := depend(ctx, taskA).Value.(int)
-b := depend(ctx, taskB).Value.(int)
+	a := depend(ctx, taskA).Value.(int)
+	b := depend(ctx, taskB).Value.(int)
 
-time.Sleep(2 * time.Second)
-return a + b, nil
+	time.Sleep(2 * time.Second)
+	return a + b, nil
 })
 
 start := time.Now()
