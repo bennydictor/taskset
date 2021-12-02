@@ -64,3 +64,13 @@ func (depend Depend) SyncGroup(ctx context.Context, tasks ...*Task) {
 
 	<-done
 }
+
+// C is a convenience method. It returns a channel with buffer 1.
+// The result of the task will be sent to this channel when the task finishes.
+func (depend Depend) C(ctx context.Context, task *Task) <-chan Result {
+	done := make(chan Result, 1)
+	go func() {
+		done <- depend(ctx, task)
+	}()
+	return done
+}

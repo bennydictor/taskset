@@ -78,6 +78,17 @@ func (ts *TaskSet) Wait(ctx context.Context) {
 	}
 }
 
+// WaitC is a convenience method. It returns a channel
+// that will be closed when Wait(context.Background()) would unblock.
+func (ts *TaskSet) WaitC() <-chan struct{} {
+	done := make(chan struct{})
+	go func() {
+		ts.Wait(context.Background())
+		close(done)
+	}()
+	return done
+}
+
 // Result returns the Result of a given Task, blocking until it is ready.
 // The provided task must belong to this TaskSet.
 // Context is only used to cancel Result, it is not passed to any of the tasks' RunFuncs.
